@@ -1,0 +1,8 @@
+app:
+  debug: true
+server:
+  port: 3000
+wechat:
+  appid:
+  appsecret:
+  token:
