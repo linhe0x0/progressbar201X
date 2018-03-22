@@ -1,0 +1,9 @@
+FROM golang:latest
+
+RUN go get -u github.com/golang/dep/cmd/dep
+
+WORKDIR /go/src/github.com/sqrthree/progressbar201X
+
+EXPOSE 3000
+
+CMD ["go", "run", "cmd/progressbar201X/main.go"]
