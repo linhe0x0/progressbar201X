@@ -1,8 +1,6 @@
 package main
 
 import (
-	"time"
-
 	"github.com/apex/log"
 	"github.com/apex/log/handlers/text"
 	"github.com/robfig/cron"
@@ -48,6 +46,8 @@ func main() {
 	log.SetLevel(logLevel)
 
 	c := cron.New()
+
+	log.Info("timed task: 0 41 9 * * *")
 
 	c.AddFunc("0 41 9 * * *", func() {
 		broadcast()
