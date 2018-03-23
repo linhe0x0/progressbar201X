@@ -16,7 +16,7 @@ FROM alpine:latest
 
 WORKDIR /root/
 
-COPY --from=builder /go/src/github.com/sqrthree/progressbar201X .
+COPY --from=builder /go/src/github.com/sqrthree/progressbar201X/app .
 
 EXPOSE 3000
 
