@@ -10,7 +10,7 @@ RUN dep ensure -vendor-only
 
 COPY . .
 
-RUN GOOS=linux GOARCH=amd64 go build -installsuffix cgo -o app ./cmd/progressbar201X/main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -installsuffix cgo -o app ./cmd/progressbar201X/main.go
 
 FROM alpine:latest
 
@@ -20,4 +20,5 @@ COPY --from=builder /go/src/github.com/sqrthree/progressbar201X/app .
 
 EXPOSE 3000
 
-CMD ["./app"]
+ENTRYPOINT /root/app
+# CMD ["./app"]
