@@ -2,7 +2,7 @@ FROM golang:latest as builder
 
 WORKDIR /go/src/github.com/sqrthree/progressbar201X
 
-RUN go get -u github.com/golang/dep/cmd/dep
+RUN curl -fsSL -o /usr/local/bin/dep https://github.com/golang/dep/releases/download/v0.4.1/dep-linux-amd64 && chmod +x /usr/local/bin/dep
 
 COPY Gopkg.toml Gopkg.lock ./
 
