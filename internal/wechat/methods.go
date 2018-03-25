@@ -185,7 +185,7 @@ func GetRandomImageMaterial(client *Client) (randomMaterial Material, err error)
 
 	randomMaterial = materials[random]
 
-	log.Debugf("selected %v from %v materials", random, len)
+	log.Debugf("selected %vth from %v materials", random + 1, len)
 
 	return
 }

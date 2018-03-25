@@ -1,9 +1,12 @@
 package main
 
 import (
+	"os"
+
 	"github.com/apex/log"
-	"github.com/apex/log/handlers/text"
+	"github.com/apex/log/handlers/logfmt"
 	"github.com/robfig/cron"
+	"github.com/sqrthree/debugfmt"
 
 	"github.com/sqrthree/progressbar201X"
 	. "github.com/sqrthree/progressbar201X/internal/config"
@@ -40,9 +43,11 @@ func main() {
 
 	if Config.App.Debug {
 		logLevel = log.DebugLevel
+		log.SetHandler(debugfmt.New(os.Stdout))
+	} else {
+		log.SetHandler(logfmt.Default)
 	}
 
-	log.SetHandler(text.Default)
 	log.SetLevel(logLevel)
 
 	c := cron.New()
