@@ -55,9 +55,12 @@ func main() {
 
 	c := cron.New()
 
-	log.Info("timed task: 0 41 9 * * *")
+	log.Info("timed task: 0 41 1 * * *")
 
-	c.AddFunc("0 41 9 * * *", func() {
+	// The server is using UTC time.
+	// A fixed 8 hour UTC offset is used in China.
+	// In order to perform the task at 09:00am, Beijing time, it needs to be fixed.
+	c.AddFunc("0 41 1 * * *", func() {
 		broadcast()
 	})
 
