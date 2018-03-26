@@ -16,7 +16,8 @@ func broadcast() {
 	progress, err := progressbar201X.GetProgressOfCurrentYear()
 
 	if err != nil {
-		log.WithError(err).Fatal("get progress of this year")
+		log.WithError(err).Error("get progress of this year")
+		return
 	}
 
 	artile := progressbar201X.NewArticle(2018, progress)
@@ -24,7 +25,8 @@ func broadcast() {
 	mediaId, err := progressbar201X.UploadArticle(artile)
 
 	if err != nil {
-		log.WithError(err).Fatal("upload article")
+		log.WithError(err).Error("upload article")
+		return
 	}
 
 	log.Info("upload article successfully, the article's mediaId is " + mediaId)
@@ -32,7 +34,8 @@ func broadcast() {
 	err = progressbar201X.BetchPostArticle(mediaId)
 
 	if err != nil {
-		log.WithError(err).Fatal("send article")
+		log.WithError(err).Error("send article")
+		return
 	}
 
 	log.Infof("Article %s has been sent.\n", mediaId)
