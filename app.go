@@ -69,7 +69,6 @@ func GetProgressOfCurrentYear() (progress float64, err error) {
 }
 
 type Article struct {
-	Author  string
 	Title   string
 	Content string
 }
@@ -80,13 +79,11 @@ func NewArticle(year int, progress float64) *Article {
 	log.Debugf("create article with progress value [%v]", p)
 
 	article := Article{
-		Author:  "progressbar201X",
 		Title:   fmt.Sprintf("%v 年已经过去了 %v%s 啦", year, p, "%"),
 		Content: fmt.Sprintf("%v 年已经过去了 %v%s 啦", year, p, "%"),
 	}
 
 	log.WithFields(log.Fields{
-		"author":  article.Author,
 		"title":   article.Title,
 		"content": article.Content,
 	}).Debug("new article")
@@ -103,14 +100,12 @@ func UploadArticle(article *Article) (mediaId string, err error) {
 
 	newArticle := wechat.ArticleMaterial{
 		ThumbMediaId: material.MediaId,
-		Author:       article.Author,
 		Title:        article.Title,
 		Content:      article.Content,
 	}
 
 	log.WithFields(log.Fields{
 		"thumb_media_id": newArticle.ThumbMediaId,
-		"author":         newArticle.Author,
 		"title":          newArticle.Title,
 		"content":        newArticle.Content,
 	}).Info("create new article")

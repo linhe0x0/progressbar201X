@@ -39,7 +39,6 @@ type Material struct {
 
 type ArticleMaterial struct {
 	ThumbMediaId string `json:"thumb_media_id"`
-	Author       string `json:"author"`
 	Title        string `json:"title"`
 	Content      string `json:"content"`
 	Digest       string `json:"digest"`
