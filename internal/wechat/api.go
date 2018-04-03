@@ -93,7 +93,7 @@ func fetchImageMaterial(client *Client) (materials []Material, err error) {
 	return
 }
 
-func uploadArticleMaterial(client *Client, article *ArticleMaterial) (mediaId string, err error) {
+func UploadArticleMaterial(client *Client, article *ArticleMaterial) (mediaId string, err error) {
 	apiURL := "https://api.weixin.qq.com/cgi-bin/material/add_news"
 
 	var result struct {
@@ -122,7 +122,7 @@ func uploadArticleMaterial(client *Client, article *ArticleMaterial) (mediaId st
 	return
 }
 
-func betchPostArticle(client *Client, mediaId string) (err error) {
+func BetchPostArticle(client *Client, mediaId string) (err error) {
 	apiURL := "https://api.weixin.qq.com/cgi-bin/message/mass/sendall"
 
 	var result struct {

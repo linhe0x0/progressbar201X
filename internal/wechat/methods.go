@@ -190,35 +190,35 @@ func GetRandomImageMaterial(client *Client) (randomMaterial Material, err error)
 	return
 }
 
-func GetAllTags(client *Client) (tags []Tag, err error) {
-	tags, err = fetchAllTags(client)
+// func GetAllTags(client *Client) (tags []Tag, err error) {
+// 	tags, err = fetchAllTags(client)
 
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+// 	if err != nil {
+// 		fmt.Println(err)
+// 		return
+// 	}
 
-	return
-}
+// 	return
+// }
 
-func UploadArticleMaterial(client *Client, article *ArticleMaterial) (mediaId string, err error) {
-	mediaId, err = uploadArticleMaterial(client, article)
+// func UploadArticleMaterial(client *Client, article *ArticleMaterial) (mediaId string, err error) {
+// 	mediaId, err = uploadArticleMaterial(client, article)
 
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+// 	if err != nil {
+// 		fmt.Println(err)
+// 		return
+// 	}
 
-	return
-}
+// 	return
+// }
 
-func BetchPostArticle(client *Client, mediaId string) (err error) {
-	err = betchPostArticle(client, mediaId)
+// func BetchPostArticle(client *Client, mediaId string) (err error) {
+// 	err = betchPostArticle(client, mediaId)
 
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+// 	if err != nil {
+// 		fmt.Println(err)
+// 		return
+// 	}
 
-	return
-}
+// 	return
+// }
