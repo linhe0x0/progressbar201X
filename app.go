@@ -1,10 +1,16 @@
 package progressbar201X
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"math"
+	"math/rand"
 	"net/http"
+	"path/filepath"
 	"strconv"
+	"text/template"
 	"time"
 
 	"github.com/apex/log"
@@ -73,22 +79,106 @@ type Article struct {
 	Content string
 }
 
-func NewArticle(year int, progress float64) *Article {
+const articleOptionsURL = "https://raw.githubusercontent.com/sqrthree/progressbar201X/quotations/main.json"
+
+type articleOption struct {
+	Body      string
+	Author    string
+	Reference string
+}
+
+func getArticleTemplate() (*template.Template, error) {
+	file, err := filepath.Abs("./article_template.html")
+
+	if err != nil {
+		return nil, err
+	}
+
+	conts, err := ioutil.ReadFile(file)
+
+	if err != nil {
+		return nil, err
+	}
+
+	temp, err := template.New("article").Parse(string(conts))
+
+	if err != nil {
+		return nil, err
+	}
+
+	return temp, nil
+}
+
+func renderArticle() (string, error) {
+	t, err := getArticleTemplate()
+
+	if err != nil {
+		return "", err
+	}
+
+	var buf bytes.Buffer
+
+	options, err := getArticleOptions()
+
+	if err != nil {
+		return "", nil
+	}
+
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	random := r.Intn(len(options))
+
+	err = t.Execute(&buf, options[random])
+
+	if err != nil {
+		return "", err
+	}
+
+	return buf.String(), nil
+}
+
+func getArticleOptions() ([]articleOption, error) {
+	var options []articleOption
+
+	res, err := http.Get(articleOptionsURL)
+	defer res.Body.Close()
+
+	if err != nil {
+		return options, err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		err = fmt.Errorf("fetch article options, got http.Status: %s", res.Status)
+		return options, err
+	}
+
+	if err = json.NewDecoder(res.Body).Decode(&options); err != nil {
+		return options, err
+	}
+
+	return options, nil
+}
+
+func NewArticle(year int, progress float64) (*Article, error) {
 	p := math.Floor(progress * 100)
 
 	log.Debugf("create article with progress value [%v]", p)
 
+	articleContent, err := renderArticle()
+
+	if err != nil {
+		return nil, err
+	}
+
 	article := Article{
 		Title:   fmt.Sprintf("%v 年已经过去了 %v%s 啦", year, p, "%"),
-		Content: fmt.Sprintf("%v 年已经过去了 %v%s 啦", year, p, "%"),
+		Content: articleContent,
 	}
 
 	log.WithFields(log.Fields{
-		"title":   article.Title,
-		"content": article.Content,
+		"title": article.Title,
 	}).Debug("new article")
 
-	return &article
+	return &article, nil
 }
 
 func UploadArticle(article *Article) (mediaId string, err error) {
@@ -107,7 +197,6 @@ func UploadArticle(article *Article) (mediaId string, err error) {
 	log.WithFields(log.Fields{
 		"thumb_media_id": newArticle.ThumbMediaId,
 		"title":          newArticle.Title,
-		"content":        newArticle.Content,
 	}).Info("create new article")
 
 	mediaId, err = wechat.UploadArticleMaterial(wechatClient, &newArticle)
