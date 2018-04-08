@@ -9,6 +9,7 @@ import (
 	"math/rand"
 	"net/http"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"text/template"
 	"time"
@@ -100,13 +101,17 @@ func getArticleTemplate() (*template.Template, error) {
 		return nil, err
 	}
 
-	temp, err := template.New("article").Parse(string(conts))
+	temp, err := template.New("article").Parse(compressString(string(conts)))
 
 	if err != nil {
 		return nil, err
 	}
 
 	return temp, nil
+}
+
+func compressString(s string) string {
+	return regexp.MustCompile("\\s*(<[^><]*>)\\s*").ReplaceAllString(s, "$1")
 }
 
 func renderArticle() (string, error) {
