@@ -1,21 +1,15 @@
 package progressbar201X
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"math"
-	"math/rand"
 	"net/http"
-	"path/filepath"
-	"regexp"
 	"strconv"
-	"text/template"
 	"time"
 
 	"github.com/apex/log"
 
+	"github.com/sqrthree/progressbar201X/internal/article"
 	. "github.com/sqrthree/progressbar201X/internal/config"
 	"github.com/sqrthree/progressbar201X/internal/timeline"
 	"github.com/sqrthree/progressbar201X/internal/wechat"
@@ -75,118 +69,29 @@ func GetProgressOfCurrentYear() (progress float64, err error) {
 	return
 }
 
-type Article struct {
-	Title   string
-	Content string
-}
-
-const articleOptionsURL = "https://raw.githubusercontent.com/sqrthree/progressbar201X/quotations/main.json"
-
-type articleOption struct {
-	Body      string
-	Author    string
-	Reference string
-}
-
-func getArticleTemplate() (*template.Template, error) {
-	file, err := filepath.Abs("./article_template.html")
-
-	if err != nil {
-		return nil, err
-	}
-
-	conts, err := ioutil.ReadFile(file)
-
-	if err != nil {
-		return nil, err
-	}
-
-	temp, err := template.New("article").Parse(compressString(string(conts)))
-
-	if err != nil {
-		return nil, err
-	}
-
-	return temp, nil
-}
-
-func compressString(s string) string {
-	return regexp.MustCompile("\\s*(<[^><]*>)\\s*").ReplaceAllString(s, "$1")
-}
-
-func renderArticle() (string, error) {
-	t, err := getArticleTemplate()
-
-	if err != nil {
-		return "", err
-	}
-
-	var buf bytes.Buffer
-
-	options, err := getArticleOptions()
-
-	if err != nil {
-		return "", nil
-	}
-
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	random := r.Intn(len(options))
-
-	err = t.Execute(&buf, options[random])
-
-	if err != nil {
-		return "", err
-	}
-
-	return buf.String(), nil
-}
-
-func getArticleOptions() ([]articleOption, error) {
-	var options []articleOption
-
-	res, err := http.Get(articleOptionsURL)
-	defer res.Body.Close()
-
-	if err != nil {
-		return options, err
-	}
-
-	if res.StatusCode != http.StatusOK {
-		err = fmt.Errorf("fetch article options, got http.Status: %s", res.Status)
-		return options, err
-	}
-
-	if err = json.NewDecoder(res.Body).Decode(&options); err != nil {
-		return options, err
-	}
-
-	return options, nil
-}
-
-func NewArticle(year int, progress float64) (*Article, error) {
+// NewArticle creates a article with specified title and auto-generated content.
+func NewArticle(year int, progress float64) (*article.Article, error) {
 	p := math.Floor(progress * 100)
 
 	log.Debugf("create article with progress value [%v]", p)
 
-	articleContent, err := renderArticle()
+	title := fmt.Sprintf("%v 年已经过去了 %v%s 啦", year, p, "%")
+
+	a, err := article.New(title)
 
 	if err != nil {
 		return nil, err
 	}
 
-	article := Article{
-		Title:   fmt.Sprintf("%v 年已经过去了 %v%s 啦", year, p, "%"),
-		Content: articleContent,
-	}
-
 	log.WithFields(log.Fields{
-		"title": article.Title,
+		"title": a.Title,
 	}).Debug("new article")
 
-	return &article, nil
+	return a, nil
 }
 
-func UploadArticle(article *Article) (mediaId string, err error) {
+// UploadArticle uploads article to WeChat's server, ready to publish it.
+func UploadArticle(a *article.Article) (mediaId string, err error) {
 	material, err := wechat.GetRandomImageMaterial(wechatClient)
 
 	if err != nil {
@@ -195,8 +100,8 @@ func UploadArticle(article *Article) (mediaId string, err error) {
 
 	newArticle := wechat.ArticleMaterial{
 		ThumbMediaId: material.MediaId,
-		Title:        article.Title,
-		Content:      article.Content,
+		Title:        a.Title,
+		Content:      a.Content,
 	}
 
 	log.WithFields(log.Fields{
@@ -209,6 +114,7 @@ func UploadArticle(article *Article) (mediaId string, err error) {
 	return
 }
 
+// BetchPostArticle posts article to everyone.
 func BetchPostArticle(mediaId string) error {
 	err := wechat.BetchPostArticle(wechatClient, mediaId)
 
