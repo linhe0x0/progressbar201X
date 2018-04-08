@@ -15,12 +15,11 @@ type accessTokenResponse struct {
 
 func fetchAccessToken(c *http.Client, appId, appSecret string) (result *accessTokenResponse, err error) {
 	res, err := c.Get("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + appId + "&secret=" + appSecret)
+	defer res.Body.Close()
 
 	if err != nil {
 		return
 	}
-
-	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
 		err = fmt.Errorf("http.Status: %s", res.Status)

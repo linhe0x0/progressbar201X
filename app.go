@@ -9,6 +9,7 @@ import (
 
 	"github.com/apex/log"
 
+	"github.com/sqrthree/progressbar201X/internal/article"
 	. "github.com/sqrthree/progressbar201X/internal/config"
 	"github.com/sqrthree/progressbar201X/internal/timeline"
 	"github.com/sqrthree/progressbar201X/internal/wechat"
@@ -68,30 +69,29 @@ func GetProgressOfCurrentYear() (progress float64, err error) {
 	return
 }
 
-type Article struct {
-	Title   string
-	Content string
-}
-
-func NewArticle(year int, progress float64) *Article {
+// NewArticle creates a article with specified title and auto-generated content.
+func NewArticle(year int, progress float64) (*article.Article, error) {
 	p := math.Floor(progress * 100)
 
 	log.Debugf("create article with progress value [%v]", p)
 
-	article := Article{
-		Title:   fmt.Sprintf("%v 年已经过去了 %v%s 啦", year, p, "%"),
-		Content: fmt.Sprintf("%v 年已经过去了 %v%s 啦", year, p, "%"),
+	title := fmt.Sprintf("%v 年已经过去了 %v%s 啦", year, p, "%")
+
+	a, err := article.New(title)
+
+	if err != nil {
+		return nil, err
 	}
 
 	log.WithFields(log.Fields{
-		"title":   article.Title,
-		"content": article.Content,
+		"title": a.Title,
 	}).Debug("new article")
 
-	return &article
+	return a, nil
 }
 
-func UploadArticle(article *Article) (mediaId string, err error) {
+// UploadArticle uploads article to WeChat's server, ready to publish it.
+func UploadArticle(a *article.Article) (mediaId string, err error) {
 	material, err := wechat.GetRandomImageMaterial(wechatClient)
 
 	if err != nil {
@@ -100,14 +100,14 @@ func UploadArticle(article *Article) (mediaId string, err error) {
 
 	newArticle := wechat.ArticleMaterial{
 		ThumbMediaId: material.MediaId,
-		Title:        article.Title,
-		Content:      article.Content,
+		Title:        a.Title,
+		Content:      a.Content,
+		ShowCoverPic: 0,
 	}
 
 	log.WithFields(log.Fields{
 		"thumb_media_id": newArticle.ThumbMediaId,
 		"title":          newArticle.Title,
-		"content":        newArticle.Content,
 	}).Info("create new article")
 
 	mediaId, err = wechat.UploadArticleMaterial(wechatClient, &newArticle)
@@ -115,6 +115,7 @@ func UploadArticle(article *Article) (mediaId string, err error) {
 	return
 }
 
+// BetchPostArticle posts article to everyone.
 func BetchPostArticle(mediaId string) error {
 	err := wechat.BetchPostArticle(wechatClient, mediaId)
 

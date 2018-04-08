@@ -20,7 +20,12 @@ func broadcast() {
 		return
 	}
 
-	artile := progressbar201X.NewArticle(2018, progress)
+	artile, err := progressbar201X.NewArticle(2018, progress)
+
+	if err != nil {
+		log.WithError(err).Error("create article")
+		return
+	}
 
 	mediaId, err := progressbar201X.UploadArticle(artile)
 

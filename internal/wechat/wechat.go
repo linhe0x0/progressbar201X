@@ -42,4 +42,5 @@ type ArticleMaterial struct {
 	Title        string `json:"title"`
 	Content      string `json:"content"`
 	Digest       string `json:"digest"`
+	ShowCoverPic int    `json:"show_cover_pic"`
 }
