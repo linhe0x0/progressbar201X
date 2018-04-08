@@ -102,6 +102,7 @@ func UploadArticle(a *article.Article) (mediaId string, err error) {
 		ThumbMediaId: material.MediaId,
 		Title:        a.Title,
 		Content:      a.Content,
+		ShowCoverPic: 0,
 	}
 
 	log.WithFields(log.Fields{
