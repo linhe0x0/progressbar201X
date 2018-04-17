@@ -20,13 +20,19 @@ const articleOptionsURL = "https://raw.githubusercontent.com/sqrthree/progressba
 
 type Article struct {
 	Title   string
+	Digest  string
 	Content string
 }
 
-type articleOption struct {
+type ReferenceOption struct {
 	Body      string
 	Author    string
 	Reference string
+}
+
+type CustomizedOptions struct {
+	Digests    []string
+	References []ReferenceOption
 }
 
 // getArticleTemplate reads the content of `PROJECT_ROOT/article_template.html`
@@ -61,7 +67,7 @@ func compressHTMLString(s string) string {
 }
 
 // renderArticle renders a article template with random options from `articleOptionsURL`.
-func renderArticle() (string, error) {
+func renderArticle(reference ReferenceOption) (string, error) {
 	t, err := getArticleTemplate()
 
 	if err != nil {
@@ -70,16 +76,7 @@ func renderArticle() (string, error) {
 
 	var buf bytes.Buffer
 
-	options, err := getArticleOptions()
-
-	if err != nil {
-		return "", nil
-	}
-
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	random := r.Intn(len(options))
-
-	err = t.Execute(&buf, options[random])
+	err = t.Execute(&buf, reference)
 
 	if err != nil {
 		return "", err
@@ -88,9 +85,9 @@ func renderArticle() (string, error) {
 	return buf.String(), nil
 }
 
-// getArticleOptions fetches latest options from `articleOptionsURL`
-func getArticleOptions() ([]articleOption, error) {
-	var options []articleOption
+// getCustomizedOptions fetches latest options from `articleOptionsURL`
+func getCustomizedOptions() (CustomizedOptions, error) {
+	var options CustomizedOptions
 
 	res, err := http.Get(articleOptionsURL)
 	defer res.Body.Close()
@@ -113,7 +110,18 @@ func getArticleOptions() ([]articleOption, error) {
 
 // New creates a new article with specified title
 func New(title string) (*Article, error) {
-	articleContent, err := renderArticle()
+	options, err := getCustomizedOptions()
+
+	if err != nil {
+		return nil, err
+	}
+
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	referenceIndex := r.Intn(len(options.References))
+	digestIndex := r.Intn(len(options.Digests))
+
+	articleContent, err := renderArticle(options.References[referenceIndex])
 
 	if err != nil {
 		return nil, err
@@ -121,11 +129,13 @@ func New(title string) (*Article, error) {
 
 	article := Article{
 		Title:   title,
+		Digest:  options.Digests[digestIndex],
 		Content: articleContent,
 	}
 
 	log.WithFields(log.Fields{
-		"title": article.Title,
+		"title":  article.Title,
+		"digest": article.Digest,
 	}).Debug("new article")
 
 	return &article, nil

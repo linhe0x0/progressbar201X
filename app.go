@@ -102,12 +102,14 @@ func UploadArticle(a *article.Article) (mediaId string, err error) {
 		ThumbMediaId: material.MediaId,
 		Title:        a.Title,
 		Content:      a.Content,
+		Digest:       a.Digest,
 		ShowCoverPic: 0,
 	}
 
 	log.WithFields(log.Fields{
 		"thumb_media_id": newArticle.ThumbMediaId,
 		"title":          newArticle.Title,
+		"digest":         newArticle.Digest,
 	}).Info("create new article")
 
 	mediaId, err = wechat.UploadArticleMaterial(wechatClient, &newArticle)
