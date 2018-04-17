@@ -35,6 +35,38 @@ type CustomizedOptions struct {
 	References []ReferenceOption
 }
 
+type ArticleOption struct {
+	Progress float64
+	ColorOfProgressText string
+	Digest string
+	Reference ReferenceOption
+}
+
+// renderArticle renders a article template with random options from `articleOptionsURL`.
+func renderArticle(options *ArticleOption) (string, error) {
+	t, err := getArticleTemplate()
+
+	if err != nil {
+		return "", err
+	}
+
+	var buf bytes.Buffer
+
+	if options.Progress < 50 {
+		options.ColorOfProgressText = "#FA6D56"
+	} else {
+		options.ColorOfProgressText = "#FFF"
+	}
+
+	err = t.Execute(&buf, options)
+
+	if err != nil {
+		return "", err
+	}
+
+	return buf.String(), nil
+}
+
 // getArticleTemplate reads the content of `PROJECT_ROOT/article_template.html`
 // and use it as the template of article.
 func getArticleTemplate() (*template.Template, error) {
@@ -61,30 +93,6 @@ func getArticleTemplate() (*template.Template, error) {
 	return temp, nil
 }
 
-// compressHTMLString compresses HTML code and retrun the compressed string.
-func compressHTMLString(s string) string {
-	return regexp.MustCompile("\\s*(<[^><]*>)\\s*").ReplaceAllString(s, "$1")
-}
-
-// renderArticle renders a article template with random options from `articleOptionsURL`.
-func renderArticle(reference ReferenceOption) (string, error) {
-	t, err := getArticleTemplate()
-
-	if err != nil {
-		return "", err
-	}
-
-	var buf bytes.Buffer
-
-	err = t.Execute(&buf, reference)
-
-	if err != nil {
-		return "", err
-	}
-
-	return buf.String(), nil
-}
-
 // getCustomizedOptions fetches latest options from `articleOptionsURL`
 func getCustomizedOptions() (CustomizedOptions, error) {
 	var options CustomizedOptions
@@ -108,9 +116,8 @@ func getCustomizedOptions() (CustomizedOptions, error) {
 	return options, nil
 }
 
-// New creates a new article with specified title
-func New(title string) (*Article, error) {
-	options, err := getCustomizedOptions()
+func GetOneOfCustomizedOptions() (*ArticleOption, error) {
+	rawOptions, err := getCustomizedOptions()
 
 	if err != nil {
 		return nil, err
@@ -118,18 +125,38 @@ func New(title string) (*Article, error) {
 
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
-	referenceIndex := r.Intn(len(options.References))
-	digestIndex := r.Intn(len(options.Digests))
+	referenceIndex := r.Intn(len(rawOptions.References))
+	digestIndex := r.Intn(len(rawOptions.Digests))
 
-	articleContent, err := renderArticle(options.References[referenceIndex])
+	var options = ArticleOption{
+		Digest: rawOptions.Digests[digestIndex],
+		Reference: rawOptions.References[referenceIndex],
+	}
+
+	return &options, nil
+}
+
+// New creates a new article with specified title
+func New(year int, progress float64) (*Article, error) {
+	options, err := GetOneOfCustomizedOptions()
 
 	if err != nil {
 		return nil, err
 	}
 
+	options.Progress = progress
+
+	articleContent, err := renderArticle(options)
+
+	if err != nil {
+		return nil, err
+	}
+
+	title := fmt.Sprintf("%v 年已经过去了 %v%s 啦", year, progress, "%")
+
 	article := Article{
 		Title:   title,
-		Digest:  options.Digests[digestIndex],
+		Digest:  options.Digest,
 		Content: articleContent,
 	}
 
@@ -139,4 +166,9 @@ func New(title string) (*Article, error) {
 	}).Debug("new article")
 
 	return &article, nil
+}
+
+// compressHTMLString compresses HTML code and retrun the compressed string.
+func compressHTMLString(s string) string {
+	return regexp.MustCompile("\\s*(<[^><]*>)\\s*").ReplaceAllString(s, "$1")
 }
