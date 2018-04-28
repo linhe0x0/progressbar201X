@@ -66,3 +66,27 @@ func NewWithMonth(t time.Time) (float64, error) {
 
 	return ratio, nil
 }
+
+func NewWithWeek(t time.Time) (float64, error) {
+  year := t.Year()
+  month := t.Month()
+  day := t.Day()
+  weekday := int(t.Weekday())
+
+  if weekday == 0 {
+    weekday = 7
+  }
+
+  start := time.Date(year, month, day - (weekday - 1), 0, 0, 0, 0, time.UTC)
+  end := time.Date(year, month, day + (7 - weekday), 24, 0, 0, 0, time.UTC)
+
+  d := [2]time.Time{start, end}
+
+  ratio, err := New(t, d)
+
+  if err != nil {
+    return -1, nil
+  }
+
+  return ratio, nil
+}

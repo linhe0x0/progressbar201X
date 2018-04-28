@@ -102,6 +102,8 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 	switch data["EventKey"] {
 	case "month":
 		contentOfResponse, err = responseOfEventMonth()
+	case "week":
+		contentOfResponse, err = responseOfEventWeek()
 	default:
 		log.Error("Unsupported event type")
 		http.Error(w, "Unsupported event type", http.StatusBadRequest)
@@ -169,5 +171,24 @@ func getProgressOfCurrentMonth() (progress float64, err error) {
 	now := time.Now().UTC().Add(8 * time.Hour)
 
 	progress, err = timeline.NewWithMonth(now)
+	return
+}
+
+func responseOfEventWeek() (string, error) {
+	progress, err := getProgressOfCurrentWeek()
+
+	if err != nil {
+		return "", nil
+	}
+
+	p := math.Floor(progress * 100)
+
+	return fmt.Sprintf("本周已经过去了 %v%s。", p, "%"), nil
+}
+
+func getProgressOfCurrentWeek() (progress float64, err error) {
+	now := time.Now().UTC().Add(8 * time.Hour)
+
+	progress, err = timeline.NewWithWeek(now)
 	return
 }
