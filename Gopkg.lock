@@ -23,6 +23,12 @@
   revision = "cc83f3b3ce5911279513a46d6d3316d67bedaa54"
 
 [[projects]]
+  name = "github.com/clbanning/mxj"
+  packages = ["."]
+  revision = "1f00e0bf9bacd7ea9c93d27594d1d1f5a41bac36"
+  version = "v1.8"
+
+[[projects]]
   name = "github.com/go-logfmt/logfmt"
   packages = ["."]
   revision = "390ab7935ee28ec6b286364bba9b4dd6410cb3d5"
@@ -76,6 +82,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d1ebc01e01b632da80191c403d5911ceb93cbba0b33793ad3a707c3ebf0a7e1c"
+  inputs-digest = "ed598e58ccae75286c4c076e1b868cfd63a6828ae836b9929665341da9e9aed8"
   solver-name = "gps-cdcl"
   solver-version = 1

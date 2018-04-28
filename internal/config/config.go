@@ -17,6 +17,7 @@ var Config = struct {
 		AppId     string
 		AppSecret string
 		Token     string
+		AESKey    string
 	}
 }{}
 

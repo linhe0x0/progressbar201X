@@ -28,7 +28,7 @@ var (
 // Handle the request.
 func handle(w http.ResponseWriter, r *http.Request) {
 	for _, route := range Routes {
-		if route.url == r.URL.Path {
+		if route.url == r.URL.Path && route.method == r.Method {
 			route.handle(w, r)
 			return
 		}

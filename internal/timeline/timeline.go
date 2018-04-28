@@ -46,3 +46,23 @@ func NewWithYear(t time.Time) (float64, error) {
 
 	return ratio, nil
 }
+
+func NewWithMonth(t time.Time) (float64, error) {
+	year := t.Year()
+	month := t.Month()
+
+	start := time.Date(year, month, 1, 0, 0, 0, 0, time.UTC)
+	end := time.Date(year, month+1, 1, 0, 0, 0, 0, time.UTC)
+
+	d := [2]time.Time{start, end}
+
+	ratio, err := New(t, d)
+
+	if err != nil {
+		return -1, err
+	}
+
+	log.Debugf("progress of %s is %v", month, ratio)
+
+	return ratio, nil
+}

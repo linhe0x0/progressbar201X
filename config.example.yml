@@ -6,3 +6,4 @@ wechat:
   appid:
   appsecret:
   token:
+  aeskey:

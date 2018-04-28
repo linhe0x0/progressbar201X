@@ -71,7 +71,5 @@ func main() {
 
 	c.Start()
 
-	select {}
-
-	// progressbar201X.StartServer()
+	progressbar201X.StartServer()
 }
