@@ -53,10 +53,10 @@
   version = "v0.8.0"
 
 [[projects]]
+  branch = "master"
   name = "github.com/robfig/cron"
   packages = ["."]
-  revision = "b024fc5ea0e34bc3f83d9941c8d60b0622bfaca4"
-  version = "v1"
+  revision = "da757ee1bf6762b4f03db86a7f043c43ca23866e"
 
 [[projects]]
   branch = "master"
@@ -82,6 +82,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ed598e58ccae75286c4c076e1b868cfd63a6828ae836b9929665341da9e9aed8"
+  inputs-digest = "08719b20c56de946e05dfc17bf6598e54316849758c438f85653f6184db82e91"
   solver-name = "gps-cdcl"
   solver-version = 1

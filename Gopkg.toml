@@ -29,10 +29,26 @@
   branch = "master"
   name = "github.com/sqrthree/toFixed"
 
-[prune]
-  go-tests = true
-  unused-packages = true
+[[constraint]]
+  branch = "master"
+  name = "github.com/sqrthree/debugfmt"
 
 [[constraint]]
   name = "github.com/apex/log"
   version = "1.0.0"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/robfig/cron"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/jinzhu/configor"
+
+[[constraint]]
+  name = "github.com/clbanning/mxj"
+  version = "v1.8"
+
+[prune]
+  go-tests = true
+  unused-packages = true
