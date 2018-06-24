@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"time"
 
 	"github.com/apex/log"
 	"github.com/apex/log/handlers/logfmt"
@@ -20,7 +21,9 @@ func broadcast() {
 		return
 	}
 
-	artile, err := progressbar201X.NewArticle(2018, progress)
+	year := time.Now().Year()
+
+	artile, err := progressbar201X.NewArticle(year, progress)
 
 	if err != nil {
 		log.WithError(err).Error("create article")
