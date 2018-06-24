@@ -67,7 +67,7 @@ func compressHTMLString(s string) string {
 }
 
 // renderArticle renders a article template with random options from `articleOptionsURL`.
-func renderArticle(reference ReferenceOption) (string, error) {
+func renderArticle(contentTitle string, reference ReferenceOption) (string, error) {
 	t, err := getArticleTemplate()
 
 	if err != nil {
@@ -76,7 +76,12 @@ func renderArticle(reference ReferenceOption) (string, error) {
 
 	var buf bytes.Buffer
 
-	err = t.Execute(&buf, reference)
+	type ContentOption struct {
+		Title     string
+		Content   ReferenceOption
+	}
+
+	err = t.Execute(&buf, ContentOption{contentTitle, reference})
 
 	if err != nil {
 		return "", err
@@ -108,8 +113,28 @@ func getCustomizedOptions() (CustomizedOptions, error) {
 	return options, nil
 }
 
-// New creates a new article with specified title
-func New(title string) (*Article, error) {
+// ████░░░░░░
+func GenerateBar(p float64) string {
+	var str string
+
+	completed := p / 10
+
+	for i := 0; i < 10; i++ {
+		if i < completed {
+			str += "\u2588"
+		} else {
+			str += "\u2591"
+		}
+	}
+
+	return str
+}
+
+// New creates a new article with specified value
+func New(year int, p float64) (*Article, error) {
+	pageTitle := GenerateBar(p)
+	contentTitle := fmt.Sprintf("%v 年已经过去了 %v%s 啦", year, p, "%")
+
 	options, err := getCustomizedOptions()
 
 	if err != nil {
@@ -121,14 +146,14 @@ func New(title string) (*Article, error) {
 	referenceIndex := r.Intn(len(options.References))
 	digestIndex := r.Intn(len(options.Digests))
 
-	articleContent, err := renderArticle(options.References[referenceIndex])
+	articleContent, err := renderArticle(contentTitle, options.References[referenceIndex])
 
 	if err != nil {
 		return nil, err
 	}
 
 	article := Article{
-		Title:   title,
+		Title:   pageTitle,
 		Digest:  options.Digests[digestIndex],
 		Content: articleContent,
 	}

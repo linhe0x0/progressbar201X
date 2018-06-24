@@ -75,9 +75,7 @@ func NewArticle(year int, progress float64) (*article.Article, error) {
 
 	log.Debugf("create article with progress value [%v]", p)
 
-	title := fmt.Sprintf("%v 年已经过去了 %v%s 啦", year, p, "%")
-
-	a, err := article.New(title)
+	a, err := article.New(year, p)
 
 	if err != nil {
 		return nil, err

@@ -1,4 +1,5 @@
 <section>
+  <h1>{{.Title}}</h1>
   <section style="max-width: 100%;color: rgb(62, 62, 62);font-size: 16px;white-space: normal;box-sizing: border-box !important;word-wrap: break-word !important;">
     <section style="max-width: 100%;width: 100%;justify-content: center;border-width: 0px;border-style: none;border-color: initial;box-sizing: border-box !important;word-wrap: break-word !important;">
       <section style="margin-top: 30px;margin-bottom: 50px;padding-right: 20px;max-width: 100%;box-sizing: border-box !important;word-wrap: break-word !important;">
@@ -9,9 +10,9 @@
               <section style="margin-left: 5px;max-width: 100%;width: 45px;box-sizing: border-box !important;word-wrap: break-word !important;"><img data-ratio="1" src="https://mmbiz.qpic.cn/mmbiz_png/WZOiaaYYotibibboCsarZblUSLnoe9vByibKvKzMo0bYOQCwrafNmz88RYL1kz5O7IjGUibFqlmJ0ibGM9wEHpCWr02g/640?wx_fmt=png" data-type="png" data-w="70" style="width: 45px;box-sizing: border-box !important;word-wrap: break-word !important;"></section>
             </section>
             <section style="padding: 5px 20px 15px;max-width: 100%;width: 100%;box-sizing: border-box !important;word-wrap: break-word !important;">
-              <p style="max-width: 100%;min-height: 1em;box-sizing: border-box !important;word-wrap: break-word !important;">{{.Body}}</p>
+              <p style="max-width: 100%;min-height: 1em;box-sizing: border-box !important;word-wrap: break-word !important;">{{.Content.Body}}</p>
               <br style="max-width: 100%;box-sizing: border-box !important;word-wrap: break-word !important;">
-              <p style="max-width: 100%;min-height: 1em;box-sizing: border-box !important;word-wrap: break-word !important;text-align: right;">{{.Author}} {{.Reference}}</p>
+              <p style="max-width: 100%;min-height: 1em;box-sizing: border-box !important;word-wrap: break-word !important;text-align: right;">{{.Content.Author}} {{.Content.Reference}}</p>
             </section>
           </section>
         </section>
