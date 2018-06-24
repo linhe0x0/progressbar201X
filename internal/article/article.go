@@ -117,7 +117,7 @@ func getCustomizedOptions() (CustomizedOptions, error) {
 func GenerateBar(p float64) string {
 	var str string
 
-	completed := p / 10
+	completed := int(p / 10)
 
 	for i := 0; i < 10; i++ {
 		if i < completed {
