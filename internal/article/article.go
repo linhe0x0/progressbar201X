@@ -113,7 +113,7 @@ func getCustomizedOptions() (CustomizedOptions, error) {
 	return options, nil
 }
 
-// ████░░░░░░
+// ▓▓▓▓░░░░░░
 func GenerateBar(p float64) string {
 	var str string
 
@@ -121,7 +121,7 @@ func GenerateBar(p float64) string {
 
 	for i := 0; i < 10; i++ {
 		if i < completed {
-			str += "\u2588"
+			str += "\u2593"
 		} else {
 			str += "\u2591"
 		}
