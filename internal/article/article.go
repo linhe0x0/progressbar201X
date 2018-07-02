@@ -138,6 +138,8 @@ func New(year int, p float64) (*Article, error) {
 	options, err := getCustomizedOptions()
 
 	if err != nil {
+		log.WithError(err).Error("fetch customized options")
+
 		return nil, err
 	}
 
@@ -149,6 +151,8 @@ func New(year int, p float64) (*Article, error) {
 	articleContent, err := renderArticle(contentTitle, options.References[referenceIndex])
 
 	if err != nil {
+		log.WithError(err).Error("render article")
+
 		return nil, err
 	}
 
