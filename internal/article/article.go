@@ -77,8 +77,8 @@ func renderArticle(contentTitle string, reference ReferenceOption) (string, erro
 	var buf bytes.Buffer
 
 	type ContentOption struct {
-		Title     string
-		Content   ReferenceOption
+		Title   string
+		Content ReferenceOption
 	}
 
 	err = t.Execute(&buf, ContentOption{contentTitle, reference})
@@ -132,8 +132,9 @@ func GenerateBar(p float64) string {
 
 // New creates a new article with specified value
 func New(year int, p float64) (*Article, error) {
-	pageTitle := GenerateBar(p)
-	contentTitle := fmt.Sprintf("%v 年已经过去了 %v%s 啦", year, p, "%")
+	bar := GenerateBar(p)
+	pageTitle := fmt.Sprintf("%v 年已经走过了 %s %v%s", year, bar, p, "%")
+	contentTitle := fmt.Sprintf("%v 年已经走过了 %v%s 啦", year, p, "%")
 
 	options, err := getCustomizedOptions()
 

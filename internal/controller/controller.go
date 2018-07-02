@@ -164,7 +164,7 @@ func responseOfEventMonth() (string, error) {
 
 	p := math.Floor(progress * 100)
 
-	return fmt.Sprintf("本月已经过去了 %v%s。", p, "%"), nil
+	return fmt.Sprintf("本月已经走过了 %v%s。", p, "%"), nil
 }
 
 func getProgressOfCurrentMonth() (progress float64, err error) {
@@ -183,7 +183,7 @@ func responseOfEventWeek() (string, error) {
 
 	p := math.Floor(progress * 100)
 
-	return fmt.Sprintf("本周已经过去了 %v%s。", p, "%"), nil
+	return fmt.Sprintf("本周已经走过了 %v%s。", p, "%"), nil
 }
 
 func getProgressOfCurrentWeek() (progress float64, err error) {
